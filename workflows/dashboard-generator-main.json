@@ -1,0 +1,682 @@
+{
+  "name": "B2B Software Dashboard Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a SaaS RevOps expert analyzing B2B SaaS companies. Research the company thoroughly and create a comprehensive analysis including key SaaS metrics.\n\n## COMPANY TO ANALYZE:\n{{ $input.first().json.body.company }}\n\n## INSTRUCTIONS:\nResearch this company using your knowledge and current information. Create a detailed SaaS analysis suitable for investors, sales teams, and executives. **Generate a concise 3-sentence summary of the company's products, customers, and overall market, to be included in the 'company_summary' field.** Research and include the actual brand colors for the top 3 competitors. Research and include the top 5 venture capital firms or investors that have invested in this company.\n\n### DATA QUALITY REQUIREMENTS:\n- Use real, current data when possible from official sources (SEC filings, company reports, earnings calls)\n- Make educated estimates for missing data based on SaaS industry benchmarks and company size\n- Ensure all SaaS metrics are realistic and mathematically consistent with each other\n- For ARR values: Express as a string with dollar sign and M/B suffix (e.g., \"$1.5B\" for 1.5 billion, \"$500M\" for 500 million)\n- For growth rates: Express as percentage strings (e.g., \"25%\" not 0.25)\n- For retention rates: Express as percentage strings (e.g., \"115%\" not 1.15)\n- Historical ARR should show realistic growth progression over 5 years\n- Historical user data should correlate with ARR growth and average contract value\n- For user counts: Use K for thousands (2K), M for millions (1.5M)\n- For competitor_colors: Use the actual brand colors of each competitor company (their primary brand color from their website/logo in hex format, e.g., Salesforce: \"#00A1E0\", Microsoft: \"#0078D4\", Oracle: \"#F80000\"). The colors must be in the same order as the competitors listed in top_competitors.\n- For company_domain: Use the primary domain name without www or https (e.g., \"salesforce.com\", \"microsoft.com\")\n- For vc_investors: Research the actual venture capital firms and investors that have funded this company. Include their correct domain names for logo display. For public companies, include major institutional investors (e.g., Vanguard, BlackRock). For bootstrapped companies, include strategic partners or advisors. List the top 5 most significant investors/partners.\n- For company_timeline: Include 5-7 major milestones spanning from company founding to present. Focus on: founding date, major product launches, significant funding rounds, acquisitions, IPO/exit events, major partnerships, and key business milestones.\n\nWhen generating the company_summary field, keep it concise and dashboard-friendly:\n- Maximum 6-7 sentences\n- Focus on: industry, key value proposition, and one standout metric\n- Target length: 320-350 characters\n- Example: \"Salesforce is the world's leading CRM platform with $34B revenue, serving 150,000+ customers across all industries with cloud-based sales and marketing solutions.\"\n\nIMPORTANT: Keep content concise for dashboard display:\n- ceo_profile.career_background: Max 140 chars\n- ceo_profile.education: Max 100 chars  \n- ceo_profile.quote: Max 120 chars (impactful single sentence)\n- competitor_summaries: Max 180 chars each\n- timeline events: Max 30 chars each (be very concise)\n\n### METRIC VALIDATION RULES:\n- Rule of 40 = (ARR Growth Rate % + Profit Margin %)\n- Net Retention Rate should be 0.8-1.5 for most SaaS companies\n- LTV:CAC ratio should be 3:1 minimum, ideally 5:1 or higher\n- Gross margins for SaaS should typically be 70-90%\n- Employee count should be reasonable for ARR size (typically $100K-$300K ARR per employee)\n- User count should align with ARR and ACV (ARR = Users × ACV)\n\nReturn your analysis in this EXACT JSON format with no additional text:\n\n```json\n{\n  \"company_name\": \"Exact company name\",\n  \"brand_primary_color\": \"#632CA6\",\n  \"brand_secondary_color\": \"#8B5FBF\",\n  \"brand_accent_color\": \"#4A1A5C\",\n  \"company_domain\": \"sage.com\",\n  \"website\": \"https://www.sage.com\",\n  \"industry\": \"Primary industry category\",\n  \"company_summary\": \"A concise 3-sentence summary covering products, customers, and overall market.\",\n  \"employee_count\": \"Number (e.g., 1200)\",\n  \"revenue_estimate\": \"Amount with currency (e.g., $500M)\",\n  \"arr_estimate\": \"Annual Recurring Revenue (e.g., $450M)\",\n  \"growth_stage\": \"Startup/Growth/Scale-up/Mature\",\n  \"funding_stage\": \"Seed/Series A/B/C/Public/Bootstrap\",\n  \"tam_estimate\": \"Market size (e.g., $50B)\",\n  \"sam_estimate\": \"Serviceable market (e.g., $15B)\",\n  \"market_growth_rate\": \"Percentage (e.g., 12%)\",\n  \"arr_growth_rate\": \"ARR YoY growth (e.g., 45%)\",\n  \"gross_retention_rate\": \"GRR percentage (e.g., 95%)\",\n  \"net_retention_rate\": \"NRR percentage (e.g., 120%)\",\n  \"customer_acquisition_cost\": \"CAC in USD (e.g., $2500)\",\n  \"customer_lifetime_value\": \"LTV in USD (e.g., $25000)\",\n  \"ltv_cac_ratio\": \"LTV:CAC ratio (e.g., 10:1)\",\n  \"magic_number\": \"Sales efficiency (e.g., 1.2)\",\n  \"monthly_churn_rate\": \"Monthly churn % (e.g., 2.5%)\",\n  \"annual_churn_rate\": \"Annual churn % (e.g., 15%)\",\n  \"average_contract_value\": \"ACV in USD (e.g., $50000)\",\n  \"contract_length\": \"Average contract duration (e.g., 12 months)\",\n  \"gross_margin\": \"Gross margin % (e.g., 85%)\",\n  \"top_competitors\": [\"Competitor 1\", \"Competitor 2\", \"Competitor 3\"],\n  \"competitor_domains\": [\"competitor1.com\", \"competitor2.com\", \"competitor3.com\"],\n  \"competitor_colors\": [\"#00A1E0\", \"#0078D4\", \"#7D2AE7\"],\n  \"share_price\": \"$45.00\",\n  \"shares_outstanding\": \"250M\", \n  \"market_cap\": \"$11.25B\",\n  \"pe_ratio\": \"35.2\",\n  \"ev_revenue_multiple\": \"11.3x\",\n  \"debt_equity_ratio\": \"0.15\",\n  \"recent_milestones\": [\n    {\"date\": \"Q1 2024\", \"title\": \"Milestone\", \"description\": \"Description\"}\n  ],\n  \"rule_of_40\": \"Growth + Profitability score (e.g., 65)\",\n  \"competitor_summaries\": [\n    \"Detailed 2-3 sentence analysis of competitor 1's strengths, market position, and strategy\",\n    \"Detailed 2-3 sentence analysis of competitor 2's strengths, market position, and strategy\", \n    \"Detailed 2-3 sentence analysis of competitor 3's strengths, market position, and strategy\"\n  ],\n  \"competitive_advantage\": \"Primary differentiator (max 100 chars)\",\n  \"market_position\": \"Leader/Challenger/Niche/Emerging\",\n  \"target_customers\": \"Primary customer type (e.g., Mid-market B2B)\",\n  \"average_deal_size\": \"Deal value (e.g., $25K)\",\n  \"sales_cycle_length\": \"Time period (e.g., 3-6 months)\",\n  \"key_decision_makers\": \"Primary buyers (e.g., CTO, VP Sales)\",\n  \"pricing_model\": \"Model type (e.g., SaaS subscription)\",\n  \"revenue_opportunity\": \"Opportunity assessment (e.g., High - expanding market)\",\n  \"go_to_market_strategy\": \"Primary GTM approach\",\n  \"ideal_customer_profile\": \"Best fit customer description\",\n  \"market_trends\": \"Key industry trends affecting this space\",\n  \"recommendations\": \"Top 3 actionable SaaS growth recommendations\",\n  \"historical_arr_data\": [\n    {\"year\": 2020, \"arr\": \"$50M\"}, \n    {\"year\": 2021, \"arr\": \"$75M\"},\n    {\"year\": 2022, \"arr\": \"$120M\"},\n    {\"year\": 2023, \"arr\": \"$180M\"},\n    {\"year\": 2024, \"arr\": \"$250M\"}\n  ],\n  \"historical_user_data\": [\n    {\"year\": 2020, \"users\": \"2K\"},\n    {\"year\": 2021, \"users\": \"3.5K\"},\n    {\"year\": 2022, \"users\": \"6K\"},\n    {\"year\": 2023, \"users\": \"10K\"},\n    {\"year\": 2024, \"users\": \"15K\"}\n  ],\n  \"arr_category\": \"Small (<$10M) / Mid ($10M-$100M) / Large ($100M-$1B) / Enterprise (>$1B)\",\n  \"growth_trajectory\": \"Hyper-growth (>100%) / High-growth (50-100%) / Moderate (20-50%) / Slow (<20%)\",\n  \"ceo_profile\": {\n    \"name\": \"CEO Full Name\",\n    \"title\": \"Title (e.g., Co-Founder & CEO)\",\n    \"career_background\": \"Previous roles and experience summary\",\n    \"education\": \"Educational background\",\n    \"previous_companies\": \"Previous companies worked at\",\n    \"tenure\": \"Years leading current company\",\n    \"quote\": \"Inspirational quote about company mission or vision (1-2 sentences)\"\n  },\n  \"revenue_by_company_size\": {\n    \"small_business_percentage\": 40,\n    \"medium_business_percentage\": 35,\n    \"large_business_percentage\": 25\n  },\n  \"vc_investors\": [\n    {\"name\": \"Investor Name\", \"domain\": \"investor.com\"},\n    {\"name\": \"Investor Name\", \"domain\": \"investor.com\"},\n    {\"name\": \"Investor Name\", \"domain\": \"investor.com\"},\n    {\"name\": \"Investor Name\", \"domain\": \"investor.com\"},\n    {\"name\": \"Investor Name\", \"domain\": \"investor.com\"}\n  ],\n  \"company_timeline\": [\n    {\"year\": 2015, \"event\": \"Company Founded\"},\n    {\"year\": 2016, \"event\": \"Seed Funding ($2M)\"},\n    {\"year\": 2018, \"event\": \"First Product Launch\"},\n    {\"year\": 2019, \"event\": \"Series A ($15M)\"},\n    {\"year\": 2021, \"event\": \"Reached 1000 Customers\"},\n    {\"year\": 2023, \"event\": \"Series C ($100M)\"},\n    {\"year\": 2024, \"event\": \"Global Expansion\"}\n  ]\n}\n```",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        40
+      ],
+      "id": "612cb44b-4c8e-4614-a47a-cb697fd9a7c7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-3-7-sonnet-20250219",
+          "cachedResultName": "Claude 3.7 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -320,
+        260
+      ],
+      "id": "56ed2f46-75c7-4a15-9294-06e302d16bcc",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "jET2xLqza91bINTg",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all();\nlet aiData = input[0].json;\n\n// Get the webhook data to extract email\nconst webhookData = $('Webhook').first().json.body;\nconst userEmail = webhookData.email;\n\n// Parse the JSON from the output field, handling code blocks\nif (aiData.output && typeof aiData.output === 'string') {\n  try {\n    let jsonString = aiData.output;\n    if (jsonString.includes('```json')) {\n      jsonString = jsonString.replace(/```json\\s*/, '').replace(/\\s*```$/, '');\n    }\n    aiData = JSON.parse(jsonString);\n  } catch (e) {\n    console.log('Error parsing JSON:', e);\n    return [{ json: { company_name: 'Parse Error', error: e.message } }];\n  }\n}\n\n// Enhanced parsing function for ARR values (handles M and B suffixes)\nconst parseARR = (value) => {\n  if (!value) return null;\n  \n  let strValue = String(value).trim();\n  console.log('Parsing ARR value:', strValue);\n  \n  // Remove currency symbols and spaces\n  let clean = strValue.replace(/[$,\\s]/g, '');\n  \n  // Handle billions - keep in billions for storage\n  if (clean.toLowerCase().includes('billion') || clean.toLowerCase().includes('b')) {\n    let numStr = clean.replace(/billion?/gi, '').replace(/b$/gi, '');\n    let num = parseFloat(numStr.replace(/[^\\d.]/g, ''));\n    return num ? num : null; // Keep as billion value\n  }\n  \n  // Handle millions - convert to decimal billions for consistency\n  if (clean.toLowerCase().includes('million') || clean.toLowerCase().includes('m')) {\n    let numStr = clean.replace(/million?/gi, '').replace(/m$/gi, '');\n    let num = parseFloat(numStr.replace(/[^\\d.]/g, ''));\n    return num ? num / 1000 : null; // Convert millions to billions\n  }\n  \n  // Handle raw numbers (assume they're already in billions if large, millions if small)\n  let num = parseFloat(clean.replace(/[^\\d.]/g, ''));\n  if (num > 100) {\n    return num / 1000; // Assume it's in millions, convert to billions\n  }\n  return num || null;\n};\n\nconst parsePercent = (value) => {\n  if (!value) return null;\n  return parseFloat(String(value).replace(/[%\\s]/g, '')) / 100;\n};\n\n// Parse current ARR (prioritize arr_estimate, fallback to revenue_estimate)\nconst currentARR = parseARR(aiData.arr_estimate || aiData.revenue_estimate);\nconsole.log('Parsed current ARR:', currentARR);\n\n// Format ARR for display - input should be in billions\nconst formatARR = (value) => {\n  if (!value) return 'N/A';\n  if (value >= 1) {\n    return `${value.toFixed(1)}B`;\n  }\n  return `${(value * 1000).toFixed(0)}M`;\n};\n\n// Build the output\nconst output = {\n  company_name: aiData.company_name || 'Unknown Company',\n  industry: aiData.industry || 'Not specified',\n  employee_count: parseInt(String(aiData.employee_count || '').replace(/[,\\s]/g, '')) || null,\n  arr_current: currentARR,\n  arr_growth_rate: parsePercent(aiData.arr_growth_rate) || 0,\n  growth_trajectory: aiData.growth_trajectory || 'Unknown',\n  net_retention_rate: parsePercent(aiData.net_retention_rate) || 0,\n  rule_of_40: parseFloat(aiData.rule_of_40) || null,\n  report_date: new Date().toISOString(),\n  \n  // Historical data - parse each year correctly\n  arr_2020: aiData.historical_arr_data?.[0] ? parseARR(aiData.historical_arr_data[0].arr) : null,\n  arr_2021: aiData.historical_arr_data?.[1] ? parseARR(aiData.historical_arr_data[1].arr) : null,\n  arr_2022: aiData.historical_arr_data?.[2] ? parseARR(aiData.historical_arr_data[2].arr) : null,\n  arr_2023: aiData.historical_arr_data?.[3] ? parseARR(aiData.historical_arr_data[3].arr) : null,\n  arr_2024: aiData.historical_arr_data?.[4] ? parseARR(aiData.historical_arr_data[4].arr) : null,\n  arr_2025: null,\n  \n  years: \"2020, 2021, 2022, 2023, 2024, 2025\",\n  arr_current_formatted: formatARR(currentARR),\n  dashboard_main_url: `https://airtable.com/appC2qVNI4l4hYYzd/pagcTZiZGOKujgn7u?filter_Company%20Name=${encodeURIComponent(aiData.company_name || 'Unknown')}`,\n  \n  // Add email from webhook\n  email: userEmail\n};\n\nreturn [{ json: output }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        40
+      ],
+      "id": "61f97b93-8537-4fce-a706-c1ce33862af2",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "62c24c91-fc30-43ae-8af3-1020d4821b54",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        40
+      ],
+      "id": "325d366e-5bb9-4115-bd60-97532dbe48ca",
+      "name": "Webhook",
+      "webhookId": "62c24c91-fc30-43ae-8af3-1020d4821b54"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appC2qVNI4l4hYYzd",
+          "mode": "list",
+          "cachedResultName": "SaaS Company Analysis",
+          "cachedResultUrl": "https://airtable.com/appC2qVNI4l4hYYzd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl35f3BTwQnm0XmH",
+          "mode": "list",
+          "cachedResultName": "Companies",
+          "cachedResultUrl": "https://airtable.com/appC2qVNI4l4hYYzd/tbl35f3BTwQnm0XmH"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $json.company_name }}",
+            "Industry": "={{ $json.industry }}",
+            "Employee Count": "={{ $json.employee_count }}",
+            "ARR Current": "={{ $json.arr_current }}",
+            "ARR Growth Rate": "={{ $json.arr_growth_rate }}",
+            "Net Retention Rate": "={{ $json.net_retention_rate }}",
+            "Growth Trajectory": "={{ $json.growth_trajectory }}",
+            "Rule of 40": "={{ $json.rule_of_40 }}",
+            "ARR 2020": "={{ $json.arr_2020 }}",
+            "ARR 2022": "={{ $json.arr_2022 }}",
+            "ARR 2023": "={{ $json.arr_2023 }}",
+            "ARR 2024": "={{ $json.arr_2024 }}",
+            "ARR 2025": "={{ $json.arr_2025 }}",
+            "Dashboard Main URL": "={{ $json.dashboard_main_url }}",
+            "ARR 2021": "={{ $json.arr_2021 }}",
+            "Report Date": "={{ $json.report_date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Employee Count",
+              "displayName": "Employee Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR Current",
+              "displayName": "ARR Current",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR Growth Rate",
+              "displayName": "ARR Growth Rate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Growth Trajectory",
+              "displayName": "Growth Trajectory",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Net Retention Rate",
+              "displayName": "Net Retention Rate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Rule of 40",
+              "displayName": "Rule of 40",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Report Date",
+              "displayName": "Report Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Dashboard Main URL",
+              "displayName": "Dashboard Main URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2020",
+              "displayName": "ARR 2020",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2021",
+              "displayName": "ARR 2021",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2022",
+              "displayName": "ARR 2022",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2023",
+              "displayName": "ARR 2023",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2024",
+              "displayName": "ARR 2024",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ARR 2025",
+              "displayName": "ARR 2025",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        256,
+        40
+      ],
+      "id": "8f4db0b5-a517-4086-a6d3-cfe9b00bbbb1",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "MEf854c1k9H8ZeNU",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Professional SaaS Dashboard Generator for n8n\n// Expects enriched data from AI Agent with all required fields\n\n// Extract and parse AI agent output\nlet data = {};\ntry {\n    const inputData = $('AI Agent').first().json;\n    if (inputData.output && typeof inputData.output === 'string') {\n        // Extract JSON from markdown code block\n        const jsonMatch = inputData.output.match(/```json\\s*([\\s\\S]*?)\\s*```/);\n        if (jsonMatch && jsonMatch[1]) {\n            data = JSON.parse(jsonMatch[1]);\n        } else {\n            data = JSON.parse(inputData.output);\n        }\n    } else {\n        data = inputData;\n    }\n} catch (error) {\n    console.error('Error parsing input:', error);\n    data = {};\n}\n\n// Process the data with proper defaults and formatting\nconst company_name = data.company_name || 'Company Name';\nconst company_domain = data.company_domain || 'company.com';\nconst brand_primary = data.brand_primary_color || '#6366F1';\nconst brand_secondary = data.brand_secondary_color || '#8B5CF6';\nconst brand_accent = data.brand_accent_color || '#10B981';\nconst company_summary = (data.company_summary || 'Company summary').replace(/\"/g, \"'\");\n\n// Format ARR properly - expects string format like \"$200M\" or \"$1.5B\"\nconst arr_value = data.arr_estimate || '$100M';\n\n// Format growth rate - expects string format like \"85%\"\nconst arr_growth = data.arr_growth_rate || '25%';\n\n// Rule of 40\nconst rule_of_40 = data.rule_of_40 || 40;\n\n// Format retention rate - expects string format like \"125%\"\nconst net_retention = data.net_retention_rate || '120%';\n\n// Extract numeric values for calculations\nconst cac = parseInt((data.customer_acquisition_cost || '5000').toString().replace(/[$,]/g, '')) || 5000;\nconst ltv = parseInt((data.customer_lifetime_value || '50000').toString().replace(/[$,]/g, '')) || 50000;\nconst churn_rate = data.monthly_churn_rate || '2%';\nconst employee_count = parseInt((data.employee_count || '500').toString().replace(/[,]/g, '')) || 500;\n\n// Competitors with proper colors and domains\nconst competitors = data.top_competitors || ['Competitor 1', 'Competitor 2', 'Competitor 3'];\nconst competitor_colors = data.competitor_colors || ['#FF7A59', '#00B372', '#7D2AE7'];\nconst competitor_domains = data.competitor_domains || competitors.map(comp => comp.toLowerCase().replace(/\\s+/g, '') + '.com');\nconst competitor_summaries = data.competitor_summaries || [\n    'Leading competitor in the market.',\n    'Established player with significant presence.',\n    'Innovative company with strong technology.'\n];\n\n// Market share\nconst market_share = data.market_share || {\n    company: 20,\n    competitor1: 30,\n    competitor2: 25,\n    competitor3: 15,\n    other: 10\n};\n\n// CEO Profile\nconst ceo_profile = data.ceo_profile || {\n    name: 'CEO Name',\n    title: 'Chief Executive Officer',\n    career_background: 'Experienced executive',\n    education: 'Business Education',\n    previous_companies: 'Previous Companies',\n    tenure: '5 years',\n    quote: 'Building the future of our industry.'\n};\n\n// VC Investors\nconst vc_investors = data.vc_investors || [\n    { name: 'Venture Capital 1', domain: 'vc1.com' },\n    { name: 'Venture Capital 2', domain: 'vc2.com' },\n    { name: 'Venture Capital 3', domain: 'vc3.com' },\n    { name: 'Venture Capital 4', domain: 'vc4.com' }\n];\n\n// Historical ARR data\nconst historical_data = data.historical_arr_data || [\n    {year: 2020, arr: \"$20M\"},\n    {year: 2021, arr: \"$35M\"},\n    {year: 2022, arr: \"$55M\"},\n    {year: 2023, arr: \"$80M\"},\n    {year: 2024, arr: \"$100M\"}\n];\n\n// Historical user data - check if AI agent provided it\nconst historical_user_data = data.historical_user_data || data.user_growth_data || null;\n\n// Company timeline\nconst timeline_events = data.company_timeline || [\n    {year: 2019, event: \"Company Founded\"},\n    {year: 2020, event: \"First Product Launch\"},\n    {year: 2021, event: \"Series A Funding\"},\n    {year: 2023, event: \"Market Expansion\"},\n    {year: 2024, event: \"Series C Funding\"}\n];\n\n// Generate revenue chart points - FIXED to show ascending trend\nconst chartPoints = [];\nconst arrValues = historical_data.map(d => {\n    const value = parseFloat(d.arr.replace(/[$BMK]/g, '')) || 1;\n    return {\n        raw: value,\n        actual: d.arr.includes('B') ? value * 1000 : value,\n        formatted: d.arr\n    };\n});\n\nconst maxValue = Math.max(...arrValues.map(v => v.actual));\nconst minValue = Math.min(...arrValues.map(v => v.actual));\n\nhistorical_data.forEach((d, i) => {\n    const value = arrValues[i];\n    const x = 60 + (i * (280 / (historical_data.length - 1)));\n    // Calculate Y position - lower values at bottom, higher values at top\n    const yRange = 120; // vertical space for the chart\n    const yBottom = 160; // bottom of chart area\n    const y = yBottom - ((value.actual / maxValue) * yRange);\n    chartPoints.push({ x, y, value: d.arr, year: d.year });\n});\n\n// Calculate additional metrics\nconst revenue_per_employee = Math.round(parseFloat(arr_value.replace(/[$BMK]/g, '')) * (arr_value.includes('B') ? 1000000 : 1000) / employee_count);\n\n// Build HTML in parts to avoid template literal parsing issues\nlet html = '<!DOCTYPE html><html lang=\"en\"><head>';\nhtml += '<meta charset=\"UTF-8\">';\nhtml += '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">';\nhtml += '<title>' + company_name + ' - SaaS Analytics Dashboard</title>';\nhtml += '<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">';\n\n// Add styles\nhtml += '<style>';\nhtml += '* { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }';\nhtml += 'body { background: #0F172A; font-family: \"Inter\", -apple-system, sans-serif; color: #ffffff; width: 1200px; margin: 0; padding: 12px; font-size: 14px; }';\nhtml += '.dashboard-wrapper { width: 100%; display: flex; flex-direction: column; gap: 12px; }';\nhtml += '.header { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(71, 85, 105, 0.3); border-radius: 10px; padding: 21px 35px; display: flex; align-items: center; gap: 28px; }';\nhtml += '.logo { width: 84px; height: 84px; background: linear-gradient(135deg, ' + brand_primary + ', ' + brand_secondary + '); background-image: url(\"https://img.logo.dev/' + company_domain + '?token=pk_ZF74ImvtSOK6XSmGEuiwUg&size=84\"); background-size: 70%; background-repeat: no-repeat; background-position: center; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: white; overflow: hidden; }';\nhtml += '.header-text h1 { font-size: 35px; font-weight: 700; margin-bottom: 4px; }';\nhtml += '.header-text p { font-size: 21px; color: #94A3B8; }';\nhtml += '.main-content { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(min-content, max-content); gap: 12px; margin-bottom: 20px; }';\nhtml += '.card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; }';\nhtml += '.metric-card { border: 1px solid rgba(255, 255, 255, 0.2); color: white; position: relative; overflow: hidden; min-height: 140px; }';\nhtml += '.metric-card::before { content: \"\"; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%); pointer-events: none; z-index: 0; }';\nhtml += '.metric-label { font-size: 10px; font-weight: 700; color: rgba(255, 255, 255, 0.9); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; position: relative; z-index: 1; }';\nhtml += '.metric-value { font-size: 28px; font-weight: 800; color: white; line-height: 1; margin-bottom: 6px; text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); position: relative; z-index: 1; }';\nhtml += '.metric-subtitle { font-size: 12px; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px; position: relative; z-index: 1; }';\nhtml += '.growth-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); position: relative; z-index: 1; margin-top: 6px; }';\nhtml += '.arr { grid-column: 1 / 3; background: linear-gradient(135deg, ' + brand_primary + ', ' + brand_secondary + '); }';\nhtml += '.rule { grid-column: 3 / 5; background: linear-gradient(135deg, #10B981, #059669); }';\nhtml += '.investors-card { grid-column: 5 / 7; }';\nhtml += '.charts { grid-column: 1 / 4; grid-row: span 2; display: flex; flex-direction: column; gap: 12px; min-height: 350px; }';\nhtml += '.ceo { grid-column: 4 / 7; grid-row: span 2; min-height: 350px; }';\nhtml += '.competitors { grid-column: 1 / 4; min-height: 300px; }';\nhtml += '.market { grid-column: 4 / 7; min-height: 300px; }';\nhtml += '.chart-container { flex: 1; display: flex; flex-direction: column; min-height: 150px; }';\nhtml += '.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }';\nhtml += '.chart-title { font-size: 12px; font-weight: 600; }';\nhtml += '.chart-period { font-size: 10px; color: #64748B; background: rgba(100, 116, 139, 0.2); padding: 3px 8px; border-radius: 12px; }';\nhtml += '.chart-area { flex: 1; background: rgba(51, 65, 85, 0.2); border-radius: 6px; padding: 12px; display: flex; align-items: center; justify-content: center; min-height: 120px; }';\nhtml += '.section-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; opacity: 0.8; }';\nhtml += '.ceo-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }';\nhtml += '.ceo-title { font-size: 12px; color: #94A3B8; margin-bottom: 16px; }';\nhtml += '.ceo-detail { margin-bottom: 8px; font-size: 11px; line-height: 1.4; color: #CBD5E1; }';\nhtml += '.ceo-detail strong { color: #F1F5F9; font-weight: 600; }';\nhtml += '.quote { margin-top: 12px; padding: 10px; background: rgba(99, 102, 241, 0.1); border-left: 3px solid ' + brand_primary + '; border-radius: 6px; font-style: italic; font-size: 11px; line-height: 1.5; color: #E0E7FF; }';\nhtml += '.investor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }';\nhtml += '.investor { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: rgba(252, 211, 77, 0.1); border: 1px solid rgba(252, 211, 77, 0.2); border-radius: 6px; font-size: 11px; font-weight: 500; }';\nhtml += '.investor-icon { width: 24px; height: 24px; background: rgba(252, 211, 77, 0.2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #FCD34D; background-size: 70%; background-repeat: no-repeat; background-position: center; }';\nhtml += '.competitor-list { display: flex; flex-direction: column; gap: 10px; }';\nhtml += '.competitor { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(51, 65, 85, 0.3); border-radius: 6px; }';\nhtml += '.competitor-logo { width: 32px; height: 32px; background: rgba(71, 85, 105, 0.5); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; background-size: 70%; background-repeat: no-repeat; background-position: center; overflow: hidden; }';\nhtml += '.competitor-info h4 { font-size: 12px; font-weight: 600; margin-bottom: 2px; }';\nhtml += '.competitor-info p { font-size: 10px; color: #94A3B8; line-height: 1.3; }';\nhtml += '.market-content { display: flex; gap: 24px; align-items: center; }';\nhtml += '.pie-chart { width: 160px; height: 160px; }';\nhtml += '.legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }';\nhtml += '.legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }';\nhtml += '.legend-label { display: flex; align-items: center; gap: 8px; }';\nhtml += '.legend-color { width: 12px; height: 12px; border-radius: 2px; }';\nhtml += '.metrics-grid { grid-column: 1 / 7; display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }';\nhtml += '.metric-small { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(71, 85, 105, 0.2); border-radius: 8px; padding: 12px; text-align: center; }';\nhtml += '.metric-small-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; opacity: 0.6; margin-bottom: 6px; }';\nhtml += '.metric-small-value { font-size: 20px; font-weight: 800; margin-bottom: 4px; }';\nhtml += '.metric-small-subtitle { font-size: 10px; color: #94A3B8; }';\nhtml += '.timeline { grid-column: 1 / 7; padding: 16px; }';\nhtml += '.timeline-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; opacity: 0.8; }';\nhtml += '.timeline-track { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }';\nhtml += '.timeline-line { position: absolute; top: 50%; left: 10px; right: 10px; height: 3px; background: ' + brand_primary + '; opacity: 0.4; z-index: 0; transform: translateY(-50%); }';\nhtml += '.timeline-item { position: relative; z-index: 1; text-align: center; max-width: 100px; }';\nhtml += '.timeline-dot { width: 12px; height: 12px; background: ' + brand_primary + '; border: 2px solid #1E293B; border-radius: 50%; margin: 0 auto 12px; }';\nhtml += '.timeline-date { font-size: 9px; font-weight: 600; color: #94A3B8; margin-bottom: 20px; }';\nhtml += '.timeline-title { font-size: 10px; font-weight: 600; margin-bottom: 3px; margin-top: 20px; }';\nhtml += '.timeline-desc { font-size: 9px; color: #94A3B8; line-height: 1.2; }';\nhtml += '.card { page-break-inside: avoid; }';\nhtml += '.main-content { page-break-inside: avoid; }';\nhtml += '@media print { body { width: 210mm; margin: 0; padding: 10mm; } .dashboard-wrapper { width: 100%; } }';\nhtml += '</style>';\nhtml += '</head><body>';\n\n// Add body content\nhtml += '<div class=\"dashboard-wrapper\">';\n\n// Header\nhtml += '<div class=\"header\">';\nhtml += '<div class=\"logo\"><span style=\"opacity: 0;\">' + company_name.charAt(0) + '</span></div>';\nhtml += '<div class=\"header-text\">';\nhtml += '<h1>' + company_name + '</h1>';\nhtml += '<p>SaaS Analytics Dashboard</p>';\nhtml += '</div>';\nhtml += '</div>';\n\n// Main content\nhtml += '<div class=\"main-content\">';\n\n// ARR Card\nhtml += '<div class=\"card metric-card arr\">';\nhtml += '<div>';\nhtml += '<div class=\"metric-label\">Annual Recurring Revenue</div>';\nhtml += '<div class=\"metric-value\">' + arr_value + '</div>';\nhtml += '<div class=\"metric-subtitle\">2024 • +' + arr_growth + ' YoY</div>';\nhtml += '</div>';\nhtml += '<div class=\"growth-indicator\"><span>↗</span> +' + arr_growth + '</div>';\nhtml += '</div>';\n\n// Rule of 40\nhtml += '<div class=\"card metric-card rule\">';\nhtml += '<div>';\nhtml += '<div class=\"metric-label\">Rule of 40</div>';\nhtml += '<div class=\"metric-value\">' + rule_of_40 + '</div>';\nhtml += '<div class=\"metric-subtitle\">Growth + Profitability</div>';\nhtml += '</div>';\nhtml += '<div class=\"growth-indicator\" style=\"background: rgba(255,255,255,0.2); color: white;\">';\nhtml += '<span>✓</span> ' + (rule_of_40 >= 40 ? 'Excellent' : rule_of_40 >= 30 ? 'Good' : 'Needs Improvement');\nhtml += '</div>';\nhtml += '</div>';\n\n// Investors Card\nhtml += '<div class=\"card investors-card\" style=\"display: flex; flex-direction: column; height: 100%;\">';\nhtml += '<div class=\"section-header\" style=\"font-size: 11px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7;\">Key Investors</div>';\nhtml += '<div class=\"investor-grid\" style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1;\">';\nvc_investors.slice(0, 4).forEach(investor => {\n    html += '<div class=\"investor\" style=\"padding: 6px 8px; display: flex; align-items: center; gap: 6px; font-size: 9px;\">';\n    html += '<div class=\"investor-icon\" style=\"width: 20px; height: 20px; font-size: 10px; flex-shrink: 0; background-image: url(\\'https://img.logo.dev/' + investor.domain + '?token=pk_ZF74ImvtSOK6XSmGEuiwUg&size=20\\');\">';\n    html += '<span style=\"opacity: 0;\">' + investor.name.charAt(0) + '</span>';\n    html += '</div>';\n    html += '<span style=\"font-size: 9px; line-height: 1.1;\">' + investor.name + '</span>';\n    html += '</div>';\n});\nhtml += '</div>';\nhtml += '</div>';\n\n// Charts\nhtml += '<div class=\"card charts\">';\nhtml += '<div class=\"chart-container\">';\nhtml += '<div class=\"chart-header\">';\nhtml += '<div class=\"chart-title\">Revenue Growth Trajectory</div>';\nhtml += '<div class=\"chart-period\">' + historical_data[0].year + ' - ' + historical_data[historical_data.length-1].year + '</div>';\nhtml += '</div>';\nhtml += '<div class=\"chart-area\">';\n\n// Revenue chart SVG\nhtml += '<svg viewBox=\"0 0 400 200\" style=\"width: 100%; height: 100%;\">';\nhtml += '<defs>';\nhtml += '<linearGradient id=\"gradient1\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:' + brand_primary + ';stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:' + brand_secondary + ';stop-opacity:1\" />';\nhtml += '</linearGradient>';\nhtml += '</defs>';\n// Grid lines\nhtml += '<line x1=\"40\" y1=\"160\" x2=\"360\" y2=\"160\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"120\" x2=\"360\" y2=\"120\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"80\" x2=\"360\" y2=\"80\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"40\" x2=\"360\" y2=\"40\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\n// Axes\nhtml += '<line x1=\"40\" y1=\"20\" x2=\"40\" y2=\"160\" stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"2\"/>';\nhtml += '<line x1=\"40\" y1=\"160\" x2=\"360\" y2=\"160\" stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"2\"/>';\n// Y-axis labels with dynamic formatting for revenue\nfunction formatRevenue(value) {\n    if (value >= 1000) {\n        return '$' + (value / 1000).toFixed(1) + 'B';\n    } else {\n        return '$' + Math.round(value) + 'M';\n    }\n}\n\nhtml += '<text x=\"35\" y=\"165\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">$0</text>';\nhtml += '<text x=\"35\" y=\"125\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatRevenue(maxValue * 0.25) + '</text>';\nhtml += '<text x=\"35\" y=\"85\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatRevenue(maxValue * 0.5) + '</text>';\nhtml += '<text x=\"35\" y=\"45\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatRevenue(maxValue * 0.75) + '</text>';\nhtml += '<text x=\"35\" y=\"25\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatRevenue(maxValue) + '</text>';\n\n// Chart line and points\nlet pathData = '';\nchartPoints.forEach((point, i) => {\n    const adjustedX = point.x;\n    const adjustedY = point.y;\n    if (i === 0) {\n        pathData += 'M' + adjustedX + ',' + adjustedY;\n    } else {\n        pathData += ' L' + adjustedX + ',' + adjustedY;\n    }\n    // X-axis label\n    html += '<text x=\"' + adjustedX + '\" y=\"180\" text-anchor=\"middle\" fill=\"#94A3B8\" font-size=\"10\">' + point.year + '</text>';\n    // Data point\n    html += '<circle cx=\"' + adjustedX + '\" cy=\"' + adjustedY + '\" r=\"4\" fill=\"#ffffff\" stroke=\"' + brand_primary + '\" stroke-width=\"2\"/>';\n    html += '<text x=\"' + adjustedX + '\" y=\"' + (adjustedY - 10) + '\" text-anchor=\"middle\" fill=\"#E2E8F0\" font-size=\"8\" font-weight=\"600\">' + point.value + '</text>';\n});\nhtml += '<path d=\"' + pathData + '\" fill=\"none\" stroke=\"url(#gradient1)\" stroke-width=\"3\"/>';\nhtml += '</svg>';\nhtml += '</div>';\nhtml += '</div>';\n\n// User growth chart container\nhtml += '<div class=\"chart-container\">';\nhtml += '<div class=\"chart-header\">';\nhtml += '<div class=\"chart-title\">Users Growth Trajectory</div>';\nhtml += '<div class=\"chart-period\">' + historical_data[0].year + ' - ' + historical_data[historical_data.length-1].year + '</div>';\nhtml += '</div>';\nhtml += '<div class=\"chart-area\">';\nhtml += '<svg viewBox=\"0 0 400 200\" style=\"width: 100%; height: 100%;\">';\nhtml += '<defs>';\nhtml += '<linearGradient id=\"gradient2\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:#F59E0B;stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:#EF4444;stop-opacity:1\" />';\nhtml += '</linearGradient>';\nhtml += '</defs>';\n// Grid lines\nhtml += '<line x1=\"40\" y1=\"160\" x2=\"360\" y2=\"160\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"120\" x2=\"360\" y2=\"120\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"80\" x2=\"360\" y2=\"80\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\nhtml += '<line x1=\"40\" y1=\"40\" x2=\"360\" y2=\"40\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"1\"/>';\n// Axes\nhtml += '<line x1=\"40\" y1=\"20\" x2=\"40\" y2=\"160\" stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"2\"/>';\nhtml += '<line x1=\"40\" y1=\"160\" x2=\"360\" y2=\"160\" stroke=\"rgba(255,255,255,0.3)\" stroke-width=\"2\"/>';\n\n// Calculate user growth based on revenue growth OR use provided data\nconst userPoints = [];\n\nif (historical_user_data && Array.isArray(historical_user_data) && historical_user_data.length > 0) {\n    // Use actual user data from AI agent if provided\n    historical_user_data.forEach((d, i) => {\n        let userCount = 0;\n        // Handle both 'users' and 'user_count' field names\n        const userValue = d.users || d.user_count || d.customers || '0';\n        \n        if (typeof userValue === 'string') {\n            // Parse string values like \"2K\", \"3.5K\", \"15K\", \"1.5M\"\n            const userStr = userValue.toString().toUpperCase().replace(/[,\\s]/g, '');\n            \n            if (userStr.includes('M')) {\n                const numValue = parseFloat(userStr.replace('M', ''));\n                userCount = numValue * 1000000;\n            } else if (userStr.includes('K')) {\n                const numValue = parseFloat(userStr.replace('K', ''));\n                userCount = numValue * 1000;\n            } else {\n                userCount = parseFloat(userStr) || 0;\n            }\n        } else if (typeof userValue === 'number') {\n            userCount = userValue;\n        }\n        \n        const x = 60 + (i * (280 / (historical_user_data.length - 1)));\n        userPoints.push({ x, value: userCount, year: d.year });\n    });\n} else {\n    // Estimate based on revenue if no user data provided\n    const acv = parseInt((data.average_contract_value || '10000').toString().replace(/[$,]/g, '')) || 10000;\n    \n    historical_data.forEach((d, i) => {\n        const value = parseFloat(d.arr.replace(/[$BMK]/g, '')) || 1;\n        const revenueInDollars = d.arr.includes('B') ? value * 1000000000 : value * 1000000;\n        const estimatedUsers = Math.round(revenueInDollars / acv);\n        const x = 60 + (i * (280 / (historical_data.length - 1)));\n        userPoints.push({ x, value: estimatedUsers, year: d.year });\n    });\n}\n\nconst maxUsers = Math.max(...userPoints.map(p => p.value)) || 10000;\n\n// Y-axis labels for users\nfunction formatUserCount(value) {\n    if (value >= 1000000000) {\n        return (value / 1000000000).toFixed(1) + 'B';\n    } else if (value >= 1000000) {\n        return Math.round(value / 1000000) + 'M';\n    } else if (value >= 1000) {\n        return Math.round(value / 1000) + 'K';\n    } else {\n        return value.toString();\n    }\n}\n\nhtml += '<text x=\"35\" y=\"165\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">0</text>';\nhtml += '<text x=\"35\" y=\"125\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatUserCount(maxUsers * 0.25) + '</text>';\nhtml += '<text x=\"35\" y=\"85\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatUserCount(maxUsers * 0.5) + '</text>';\nhtml += '<text x=\"35\" y=\"45\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatUserCount(maxUsers * 0.75) + '</text>';\nhtml += '<text x=\"35\" y=\"25\" text-anchor=\"end\" fill=\"#94A3B8\" font-size=\"9\">' + formatUserCount(maxUsers) + '</text>';\n// Draw user growth line and points\nlet userPathData = '';\nuserPoints.forEach((point, i) => {\n    const y = 160 - ((point.value / maxUsers) * 120);\n    if (i === 0) {\n        userPathData += 'M' + point.x + ',' + y;\n    } else {\n        userPathData += ' L' + point.x + ',' + y;\n    }\n    // X-axis label - use the year from the data point\n    html += '<text x=\"' + point.x + '\" y=\"180\" text-anchor=\"middle\" fill=\"#94A3B8\" font-size=\"10\">' + point.year + '</text>';\n    // Data point\n    html += '<circle cx=\"' + point.x + '\" cy=\"' + y + '\" r=\"4\" fill=\"#ffffff\" stroke=\"#F59E0B\" stroke-width=\"2\"/>';\n    // Value label\n    const formattedValue = point.value >= 1000000 ? (point.value / 1000000).toFixed(1) + 'M' : \n                          point.value >= 1000 ? Math.round(point.value / 1000) + 'K' : \n                          point.value;\n    html += '<text x=\"' + point.x + '\" y=\"' + (y - 10) + '\" text-anchor=\"middle\" fill=\"#E2E8F0\" font-size=\"8\" font-weight=\"600\">' + formattedValue + '</text>';\n});\nhtml += '<path d=\"' + userPathData + '\" fill=\"none\" stroke=\"url(#gradient2)\" stroke-width=\"3\"/>';\nhtml += '</svg>';\nhtml += '</div>';\nhtml += '</div>';\nhtml += '</div>';\n\n// CEO Profile\nhtml += '<div class=\"card ceo\">';\nhtml += '<div class=\"section-header\">Company Summary</div>';\nhtml += '<p style=\"font-size: 14px; line-height: 1.7; color: #CBD5E1; margin-bottom: 24px;\">' + company_summary + '</p>';\nhtml += '<div style=\"padding-top: 20px; border-top: 1px solid rgba(71, 85, 105, 0.3);\">';\nhtml += '<div class=\"section-header\">CEO Profile</div>';\nhtml += '<div class=\"ceo-name\">' + ceo_profile.name + '</div>';\nhtml += '<div class=\"ceo-title\">' + ceo_profile.title + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Career:</strong> ' + ceo_profile.career_background + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Education:</strong> ' + ceo_profile.education + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Companies:</strong> ' + ceo_profile.previous_companies + ' | ' + ceo_profile.tenure + '</div>';\nhtml += '<div class=\"quote\">\"' + ceo_profile.quote + '\"</div>';\n\n// Add company stats section\nhtml += '<div class=\"company-stats\" style=\"margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(71, 85, 105, 0.3);\">';\nhtml += '<div class=\"section-header\" style=\"font-size: 12px; margin-bottom: 12px;\">Key Company Metrics</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Employees:</strong> ' + employee_count.toLocaleString() + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Founded:</strong> ' + (timeline_events[0] ? timeline_events[0].year : '2015') + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Headquarters:</strong> ' + (data.headquarters || 'San Francisco, CA') + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Business Model:</strong> ' + (data.pricing_model || 'SaaS Subscription') + '</div>';\nhtml += '<div class=\"ceo-detail\"><strong>Target Market:</strong> ' + (data.target_customers || 'Enterprise') + '</div>';\nhtml += '</div>';\n\nhtml += '</div>';\nhtml += '</div>';\n\n// Competitors\nhtml += '<div class=\"card competitors\">';\nhtml += '<div class=\"section-header\">Key Competitors</div>';\nhtml += '<div class=\"competitor-list\">';\ncompetitors.forEach((comp, idx) => {\n    html += '<div class=\"competitor\">';\n    html += '<div class=\"competitor-logo\" style=\"color: ' + (competitor_colors[idx] || '#94A3B8') + '; background-image: url(\\'https://img.logo.dev/' + competitor_domains[idx] + '?token=pk_ZF74ImvtSOK6XSmGEuiwUg&size=32\\');\">';\n    html += '<span style=\"opacity: 0;\">' + comp.charAt(0) + '</span>';\n    html += '</div>';\n    html += '<div class=\"competitor-info\">';\n    html += '<h4>' + comp + '</h4>';\n    html += '<p>' + competitor_summaries[idx] + '</p>';\n    html += '</div>';\n    html += '</div>';\n});\nhtml += '</div>';\nhtml += '</div>';\n\n// Market Share\nhtml += '<div class=\"card market\">';\nhtml += '<div class=\"section-header\">Market Share Analysis</div>';\nhtml += '<div class=\"market-content\">';\n\n// Create donut chart SVG - BIGGER SIZE\nhtml += '<div style=\"position: relative; width: 220px; height: 220px;\">';\nhtml += '<svg viewBox=\"0 0 240 240\" style=\"width: 100%; height: 100%; filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));\">';\nhtml += '<defs>';\n// Gradients for each segment\nhtml += '<linearGradient id=\"companyGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:' + brand_primary + ';stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:' + brand_secondary + ';stop-opacity:1\" />';\nhtml += '</linearGradient>';\nhtml += '<linearGradient id=\"comp1Grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:' + (competitor_colors[0] || '#FF6B6B') + ';stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:' + (competitor_colors[0] || '#FF6B6B') + ';stop-opacity:0.7\" />';\nhtml += '</linearGradient>';\nhtml += '<linearGradient id=\"comp2Grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:' + (competitor_colors[1] || '#4ECDC4') + ';stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:' + (competitor_colors[1] || '#4ECDC4') + ';stop-opacity:0.7\" />';\nhtml += '</linearGradient>';\nhtml += '<linearGradient id=\"comp3Grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:' + (competitor_colors[2] || '#45B7D1') + ';stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:' + (competitor_colors[2] || '#45B7D1') + ';stop-opacity:0.7\" />';\nhtml += '</linearGradient>';\nhtml += '<linearGradient id=\"otherGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">';\nhtml += '<stop offset=\"0%\" style=\"stop-color:#F7DC6F;stop-opacity:1\" />';\nhtml += '<stop offset=\"100%\" style=\"stop-color:#F7DC6F;stop-opacity:0.7\" />';\nhtml += '</linearGradient>';\nhtml += '</defs>';\n\n// Draw donut segments - BIGGER RADIUS\nconst centerX = 120;\nconst centerY = 120;\nconst outerRadius = 95;\nconst innerRadius = 60;\n\n// Create sorted array of market segments\nconst marketSegments = [\n    { name: company_name, percentage: market_share.company || 20, color: 'companyGrad', gradient: brand_primary + ',' + brand_secondary },\n    { name: competitors[0], percentage: market_share.competitor1 || 25, color: 'comp1Grad', gradient: competitor_colors[0] || '#FF6B6B' },\n    { name: competitors[1], percentage: market_share.competitor2 || 20, color: 'comp2Grad', gradient: competitor_colors[1] || '#4ECDC4' },\n    { name: competitors[2], percentage: market_share.competitor3 || 15, color: 'comp3Grad', gradient: competitor_colors[2] || '#45B7D1' },\n    { name: 'Other', percentage: market_share.other || 10, color: 'otherGrad', gradient: '#F7DC6F' }\n].sort((a, b) => b.percentage - a.percentage); // Sort by percentage descending\n\n// Draw segments in order\nlet currentAngle = -90; // Start from top\nmarketSegments.forEach((segment, idx) => {\n    const angle = segment.percentage * 3.6;\n    const path = describeArc(centerX, centerY, outerRadius, innerRadius, currentAngle, currentAngle + angle - (idx < marketSegments.length - 1 ? 2 : 0));\n    html += '<path d=\"' + path + '\" fill=\"url(#' + segment.color + ')\" stroke=\"rgba(30, 41, 59, 0.8)\" stroke-width=\"2\"/>';\n    currentAngle += angle + (idx < marketSegments.length - 1 ? 2 : 0); // Add small gap except for last segment\n});\n\n// Center text showing company percentage\nhtml += '<text x=\"120\" y=\"115\" text-anchor=\"middle\" dominant-baseline=\"middle\" fill=\"#F8FAFC\" font-size=\"32\" font-weight=\"700\">' + (market_share.company || 20) + '%</text>';\nhtml += '<text x=\"120\" y=\"140\" text-anchor=\"middle\" fill=\"#94A3B8\" font-size=\"13\" font-weight=\"500\">Market Share</text>';\n\nhtml += '</svg>';\nhtml += '</div>';\n\n// Legend with better styling - ORDERED BY PERCENTAGE\nhtml += '<div class=\"legend\" style=\"margin-left: 25px; gap: 12px; display: flex; flex-direction: column;\">';\nmarketSegments.forEach(segment => {\n    const isCompany = segment.name === company_name;\n    html += '<div class=\"legend-item\" style=\"margin-bottom: 4px;\">';\n    html += '<div class=\"legend-label\">';\n    html += '<div class=\"legend-color\" style=\"width: 14px; height: 14px; background: linear-gradient(135deg, ' + segment.gradient + (segment.gradient.includes(',') ? '' : ',' + segment.gradient + '88') + '); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);\"></div>';\n    html += '<span style=\"font-size: 13px; ' + (isCompany ? 'font-weight: 700;' : '') + '\">' + segment.name + '</span>';\n    html += '</div>';\n    html += '<span style=\"font-size: 13px; font-weight: ' + (isCompany ? '700' : '600') + '; color: ' + (isCompany ? '#F8FAFC' : '#E2E8F0') + ';\">' + segment.percentage + '%</span>';\n    html += '</div>';\n});\nhtml += '</div>';\nhtml += '</div>';\nhtml += '</div>';\n\n// Helper function for donut arc paths\nfunction describeArc(x, y, outerRadius, innerRadius, startAngle, endAngle) {\n    const start = polarToCartesian(x, y, outerRadius, endAngle);\n    const end = polarToCartesian(x, y, outerRadius, startAngle);\n    const largeArcFlag = endAngle - startAngle <= 180 ? \"0\" : \"1\";\n    \n    const innerStart = polarToCartesian(x, y, innerRadius, endAngle);\n    const innerEnd = polarToCartesian(x, y, innerRadius, startAngle);\n    \n    const d = [\n        \"M\", start.x, start.y, \n        \"A\", outerRadius, outerRadius, 0, largeArcFlag, 0, end.x, end.y,\n        \"L\", innerEnd.x, innerEnd.y,\n        \"A\", innerRadius, innerRadius, 0, largeArcFlag, 1, innerStart.x, innerStart.y,\n        \"Z\"\n    ].join(\" \");\n    \n    return d;\n}\n\nfunction polarToCartesian(centerX, centerY, radius, angleInDegrees) {\n    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;\n    return {\n        x: centerX + (radius * Math.cos(angleInRadians)),\n        y: centerY + (radius * Math.sin(angleInRadians))\n    };\n}\n\n// Metrics Grid\nhtml += '<div class=\"metrics-grid\">';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Growth Rate</div>';\nhtml += '<div class=\"metric-small-value\">' + arr_growth + '</div>';\nhtml += '<div class=\"metric-small-subtitle\">Annual ARR</div>';\nhtml += '</div>';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Net Retention</div>';\nhtml += '<div class=\"metric-small-value\">' + net_retention + '</div>';\nhtml += '<div class=\"metric-small-subtitle\">Customer Expansion</div>';\nhtml += '</div>';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Customer CAC</div>';\nhtml += '<div class=\"metric-small-value\">$' + (cac / 1000).toFixed(0) + 'K</div>';\nhtml += '<div class=\"metric-small-subtitle\">Acquisition Cost</div>';\nhtml += '</div>';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Lifetime Value</div>';\nhtml += '<div class=\"metric-small-value\">$' + (ltv / 1000).toFixed(0) + 'K</div>';\nhtml += '<div class=\"metric-small-subtitle\">Customer LTV</div>';\nhtml += '</div>';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Monthly Churn</div>';\nhtml += '<div class=\"metric-small-value\">' + churn_rate + '</div>';\nhtml += '<div class=\"metric-small-subtitle\">Churn Rate</div>';\nhtml += '</div>';\nhtml += '<div class=\"metric-small\">';\nhtml += '<div class=\"metric-small-label\">Rev/Employee</div>';\nhtml += '<div class=\"metric-small-value\">$' + revenue_per_employee + 'K</div>';\nhtml += '<div class=\"metric-small-subtitle\">Annual per FTE</div>';\nhtml += '</div>';\nhtml += '</div>';\n\n// Timeline\nhtml += '<div class=\"card timeline\">';\nhtml += '<div class=\"timeline-header\">Company Milestones Timeline</div>';\nhtml += '<div class=\"timeline-track\">';\nhtml += '<div class=\"timeline-line\"></div>';\ntimeline_events.slice(0, 5).forEach((event, idx) => {\n    const colors = [brand_primary, brand_secondary, '#10B981', '#F59E0B', '#06B6D4'];\n    html += '<div class=\"timeline-item\">';\n    html += '<div class=\"timeline-dot\" style=\"background: ' + colors[idx % colors.length] + ';\"></div>';\n    html += '<div class=\"timeline-date\">' + event.year + '</div>';\n    html += '<div class=\"timeline-title\">' + event.event + '</div>';\n    html += '<div class=\"timeline-desc\">' + event.event + '</div>';\n    html += '</div>';\n});\nhtml += '</div>';\nhtml += '</div>';\n\n// Close main content\nhtml += '</div>';\n\n// Close dashboard wrapper\nhtml += '</div>';\n\n// Close body and html\nhtml += '</body></html>';\n\n// Return the result\nreturn [{ \n    json: {\n        dashboard_html: html,\n        status: 'success',\n        message: 'Dashboard HTML generated successfully'\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        40
+      ],
+      "id": "d04d6d8c-0198-4ad9-8d88-79da2e149204",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "a3088c1f-53b0-4182-add2-90332ac175db",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "00065b16-1e1f-4629-8341-3c5564320cc0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "99de2ffe-106c-4ba2-8aa3-6b9ce9236b0d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "c6a493a9-8004-4317-afb8-a5ff72e6af03",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "a61ad103-26cc-4a4f-9c8c-8208c7c0727e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "3894d99f-96c6-4033-ada4-849f12d838df",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "30ff63a5-d204-4594-a909-c5edec62d6fa",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "57ee3d31-768d-476d-932e-11e050aa466a",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "e9c7462a-3bd9-49db-a159-88f570a642d5",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "a5aee793-7883-4f81-a229-f424fd9c9d3c",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "db0ad829-34de-43d0-a2af-044ef77ecd90",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "4bb8146d-babc-493b-9095-9317b19db095",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "3f32d9ae-0611-4ed5-9401-72e2e4a40adf",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "be6b0107-d8fe-4b44-a32d-1e9a0f4c97f8",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "f9c7070e-c24e-4ab0-9bde-f5d40ec8609b",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "0053d7f0-7e75-4046-afa7-af5bbfd262b5",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "19cc0bc6-88bc-4e3f-ab08-ea3a205fd9bd",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "db3b50b0-4f64-48bc-b089-5d2723e0fd4d",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').first().json.body.email }}",
+        "subject": "={{ $('Code').first().json.company_name }} Analysis Complete",
+        "message": "=<div style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; padding: 20px;\">          <div style=\"color: #4285f4; font-size: 24px; font-weight: bold; margin-bottom: 20px;\">         Your {{ $('Code').first().json.company_name }} Analysis is Complete! 🎯     </div>          <div style=\"margin-bottom: 20px; font-size: 16px;\">         Hi there!     </div>          <div style=\"margin-bottom: 20px;\">         Your comprehensive company analysis for <strong>{{ $('Code').first().json.company_name }}</strong> is ready to view.     </div>          <div style=\"margin: 25px 0;\">         <div style=\"color: #333; font-size: 16px; font-weight: 600; margin-bottom: 15px;\">             📈 Key Highlights:         </div>         <ul style=\"list-style: none; padding: 0;\">             <li style=\"margin-bottom: 8px;\"><strong>Employee Count:</strong> {{ $('Code').first().json.employee_count?.toLocaleString() }}</li>             <li style=\"margin-bottom: 8px;\"><strong>Growth Rate:</strong> {{ Math.round($('Code').first().json.arr_growth_rate * 100) }}%</li>             <li style=\"margin-bottom: 8px;\"><strong>Net Retention Rate:</strong> {{ Math.round($('Code').first().json.net_retention_rate * 100) }}%</li>             <li style=\"margin-bottom: 8px;\"><strong>Rule of 40 Score:</strong> {{ $('Code').first().json.rule_of_40 }}</li>         </ul>     </div>          <div style=\"margin: 20px 0; line-height: 1.6;\">         Your personalized dashboard is attached below as a PDF and includes detailed financial metrics, growth trajectory analysis, and revenue projections.     </div>          <div style=\"margin-top: 30px; color: #666;\">         Questions? Just reply to this email.     </div>          <div style=\"margin-top: 10px; color: #333;\">         Best regards,<br>         Your Analysis Team     </div>      </div>",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        40
+      ],
+      "id": "d0dacc5a-c918-4787-b892-86b28e6c582f",
+      "name": "Gmail",
+      "webhookId": "25b1e03e-688d-4a9f-bbaf-cd478acacb56",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kng65pXfgPsq4h61",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pdfshift.io/v3/convert/pdf",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "source",
+              "value": "={{ $json.dashboard_html }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        40
+      ],
+      "id": "3e3cec07-90d1-4469-a527-0bd34222c992",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "hJHaaohe6A8ab5d1",
+          "name": "PDF Shift"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dda5df2e-5d9d-494e-bd0d-0e8859377f22",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f9cc86cc44767548ddda8a27ce5eaeb076da278ec4d3feb3ad1ea67e2a5a378d"
+  },
+  "id": "jsk3dJmJi18TNPYj",
+  "tags": []
+}
