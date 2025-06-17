@@ -46,35 +46,5 @@ Fill out form with company name and email
 Automated workflow generates comprehensive dashboard
 Receive HTML + PDF reports via email
 
-Prerequisites: n8n instance, Google Forms, Anthropic API key, Airtable account
-Installation:
-
-Create Google Form with "Company Name" and "Email" fields
-Import workflow JSON into n8n
-Configure API credentials (Claude, Airtable, Gmail, PDF Shift)
-Connect Google Form trigger to workflow
-
-💡 Technical Highlights
-
-Advanced AI prompting for accurate business intelligence
-Dynamic brand color extraction and competitor research
-Scalable architecture with error handling and data validation
-Professional design system with responsive layouts
-Real-time processing with 95%+ success rate
-
-📈 Business Value
-
-Investment Research: Automated due diligence and market analysis
-Sales Intelligence: Instant prospect research and competitive positioning
-Strategic Planning: Market opportunity assessment with financial modeling
-Client Presentations: Professional reports for stakeholders
-
-🎯 Results
-
-Processing Time: Average 2.5 minutes end-to-end
-Data Accuracy: 90%+ for financial metrics
-Success Rate: 95%+ for public B2B SaaS companies
-Output Quality: Investment-grade reports with custom branding
-
 
 Contact: Zach Baumgarten | zachbaumgarten@gmail.com | Palo Alto, CA
